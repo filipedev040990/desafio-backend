@@ -29,3 +29,5 @@ assim que sair do cartaz, passando pela minha autorização. Você pode me ajuda
 
 ### Diferenciais 💖
 - DDD
+
+✅ ⛔
