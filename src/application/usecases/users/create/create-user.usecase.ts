@@ -1,17 +1,8 @@
+import { UUIDGeneratorInterface, HasherInterface, JwtInterface } from '@/application/adapters'
+import { CreateUserUseCaseInterface, InputRequiredFields } from './create-user.types'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
-import { CreateUserUseCaseInterface } from './create-user.types'
 import { isValidEmail, isValidString } from '@/shared/helpers'
 import { UserRepository } from '@/application/repositories'
-import { UUIDGeneratorInterface } from '@/application/adapters/uuid.interface'
-import { HasherInterface } from '@/application/adapters/encrypt.interface'
-import { JwtInterface } from '@/application/adapters/jwt.interface'
-
-type InputRequiredFields = {
-  name: string
-  email: string
-  password: string
-  passwordConfirmation: string
-}
 
 export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
@@ -29,15 +20,16 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
       id: this.uuidGenerator.generate(),
       name: input.name,
       email: input.email,
-      password: this.hashGenerator.hash(input.password),
-      permissions: input.permissions
+      password: await this.hashGenerator.hash(input.password),
+      permissions: input.permissions,
+      createdAt: new Date()
     })
 
-    const accessToken = await this.tokenGenerator.encrypt({ userId })
+    const token = await this.tokenGenerator.encrypt({ userId })
 
     return {
       id: userId,
-      access_token: accessToken
+      access_token: token
     }
   }
 

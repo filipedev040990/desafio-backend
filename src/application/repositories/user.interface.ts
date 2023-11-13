@@ -11,6 +11,7 @@ export type CreateUserRepositoryInput = {
   email: string
   password: string
   permissions: number []
+  createdAt: Date
 }
 
 export interface UserRepository {

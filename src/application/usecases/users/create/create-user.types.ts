@@ -16,3 +16,10 @@ export namespace CreateUserUseCaseInterface {
     access_token: string
   }
 }
+
+export type InputRequiredFields = {
+  name: string
+  email: string
+  password: string
+  passwordConfirmation: string
+}

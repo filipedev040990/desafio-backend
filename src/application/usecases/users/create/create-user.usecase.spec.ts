@@ -3,8 +3,9 @@ import { CreateUserUseCase } from './create-user.usecase'
 import { UserRepository } from '@/application/repositories'
 import { UUIDGeneratorInterface } from '@/application/adapters/uuid.interface'
 import { HasherInterface } from '@/application/adapters/encrypt.interface'
-import { mock } from 'jest-mock-extended'
 import { JwtInterface } from '@/application/adapters/jwt.interface'
+import { mock } from 'jest-mock-extended'
+import MockDate from 'mockdate'
 
 describe('CreateUserUseCase', () => {
   let sut: CreateUserUseCase
@@ -16,6 +17,7 @@ describe('CreateUserUseCase', () => {
 
   beforeAll(() => {
     sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator, tokenGenerator)
+    MockDate.set(new Date())
   })
   beforeEach(() => {
     input = {
@@ -29,8 +31,11 @@ describe('CreateUserUseCase', () => {
     userRepository.getByEmail.mockResolvedValue(null)
     userRepository.create.mockResolvedValue('anyUUID')
     uuidGenerator.generate.mockReturnValue('anyUUID')
-    hashGenerator.hash.mockReturnValue('anyHash')
+    hashGenerator.hash.mockResolvedValue('anyHash')
     tokenGenerator.encrypt.mockResolvedValue('anyToken')
+  })
+  afterAll(() => {
+    MockDate.reset()
   })
 
   test('Should throws if any required field is not provided', async () => {
@@ -97,7 +102,8 @@ describe('CreateUserUseCase', () => {
       name: 'AnyName',
       email: 'any@email.com',
       password: 'anyHash',
-      permissions: [1, 2, 3, 4]
+      permissions: [1, 2, 3, 4],
+      createdAt: new Date()
     })
   })
 
