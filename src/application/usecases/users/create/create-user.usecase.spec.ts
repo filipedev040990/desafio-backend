@@ -1,6 +1,6 @@
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { CreateUserUseCase } from './create-user.usecase'
-import { UserRepository } from '@/application/repositories'
+import { UserRepositoryInterface } from '@/application/repositories'
 import { UUIDGeneratorInterface } from '@/application/adapters/uuid.interface'
 import { HasherInterface } from '@/application/adapters/encrypt.interface'
 import { JwtInterface } from '@/application/adapters/jwt.interface'
@@ -10,7 +10,7 @@ import MockDate from 'mockdate'
 describe('CreateUserUseCase', () => {
   let sut: CreateUserUseCase
   let input: any
-  const userRepository = mock<UserRepository>()
+  const userRepository = mock<UserRepositoryInterface>()
   const uuidGenerator = mock<UUIDGeneratorInterface>()
   const hashGenerator = mock<HasherInterface>()
   const tokenGenerator = mock<JwtInterface>()
@@ -102,7 +102,7 @@ describe('CreateUserUseCase', () => {
       name: 'AnyName',
       email: 'any@email.com',
       password: 'anyHash',
-      permissions: [1, 2, 3, 4],
+      permissions: '1,2,3,4',
       createdAt: new Date()
     })
   })

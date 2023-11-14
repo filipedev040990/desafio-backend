@@ -20,6 +20,7 @@
     "test:integration": "npm t -- --config ./jest.integration.config.js"
   },
   "dependencies": {
+    "@prisma/client": "^5.5.2",
     "@types/cors": "^2.8.13",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -49,6 +50,7 @@
     "jest-mock-extended": "^2.0.1",
     "lint-staged": "^11.1.2",
     "mockdate": "^3.0.5",
+    "prisma": "^5.5.2",
     "supertest": "^6.1.6",
     "ts-jest": "27.0.5",
     "ts-node-dev": "^1.1.8",

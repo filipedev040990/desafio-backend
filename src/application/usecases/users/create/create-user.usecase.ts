@@ -2,11 +2,11 @@ import { UUIDGeneratorInterface, HasherInterface, JwtInterface } from '@/applica
 import { CreateUserUseCaseInterface, InputRequiredFields } from './create-user.types'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { isValidEmail, isValidString } from '@/shared/helpers'
-import { UserRepository } from '@/application/repositories'
+import { UserRepositoryInterface } from '@/application/repositories'
 
 export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: UserRepositoryInterface,
     private readonly uuidGenerator: UUIDGeneratorInterface,
     private readonly hashGenerator: HasherInterface,
     private readonly tokenGenerator: JwtInterface
@@ -21,7 +21,7 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
       name: input.name,
       email: input.email,
       password: await this.hashGenerator.hash(input.password),
-      permissions: input.permissions,
+      permissions: input.permissions.join(','),
       createdAt: new Date()
     })
 

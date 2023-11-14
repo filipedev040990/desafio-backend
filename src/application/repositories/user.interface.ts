@@ -10,11 +10,11 @@ export type CreateUserRepositoryInput = {
   name: string
   email: string
   password: string
-  permissions: number []
+  permissions: string
   createdAt: Date
 }
 
-export interface UserRepository {
+export interface UserRepositoryInterface {
   getByEmail: (email: string) => Promise<UserOutput | null>
   create: (input: CreateUserRepositoryInput) => Promise<string>
 }
