@@ -5,3 +5,5 @@ import { createUserControllerFactory } from '../factories/controllers/create-use
 const router = Router()
 
 router.post('/user', expressAdapter(createUserControllerFactory()))
+
+export { router }

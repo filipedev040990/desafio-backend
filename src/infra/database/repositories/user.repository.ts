@@ -1,4 +1,5 @@
-import { CreateUserRepositoryInput, UserOutput, UserRepositoryInterface } from '@/application/repositories'
+
+import { UserRepositoryInterface, UserOutput, CreateUserRepositoryInput } from '@/application/interfaces/repositories'
 import { prismaClient } from '../config/prisma-client'
 
 export class UserRepository implements UserRepositoryInterface {

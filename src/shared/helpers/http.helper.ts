@@ -7,20 +7,32 @@ export const success = (statusCode: number, body: any): HttpResponse => ({
 
 export const badRequest = (error: Error): HttpResponse => ({
   statusCode: 400,
-  body: error
+  body: {
+    error: error.name,
+    message: error.message
+  }
 })
 
 export const unauthorized = (error: Error): HttpResponse => ({
   statusCode: 401,
-  body: error
+  body: {
+    error: error.name,
+    message: error.message
+  }
 })
 
 export const forbiddenError = (error: Error): HttpResponse => ({
   statusCode: 403,
-  body: error
+  body: {
+    error: error.name,
+    message: error.message
+  }
 })
 
 export const serverError = (error: Error): HttpResponse => ({
   statusCode: 500,
-  body: error
+  body: {
+    error: error.name,
+    message: error.message
+  }
 })
