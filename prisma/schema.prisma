@@ -21,3 +21,16 @@ model User {
 
   @@map("users")
 }
+
+model Request {
+  id        String    @id
+  method    String
+  route     String
+  input     String    @db.LongText()
+  output    String?   @db.LongText()
+  status    Int?
+  createdAt DateTime
+  updatedAt DateTime?
+
+  @@map("requests")
+}

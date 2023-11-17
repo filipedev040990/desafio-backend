@@ -8,7 +8,7 @@
 ✅ Deve gerar um token de acesso
 ✅ Deve salvar corretamente as permissões do usuário
 ✅ Deve retornar 200 com o token de acesso do usuario
-⛔ Deve retornar 500 em caso de erro
+✅ Deve retornar 500 em caso de erro
 
 ### Input esperado
 {
