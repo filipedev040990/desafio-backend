@@ -1,11 +1,9 @@
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { CreateUserUseCase } from './create-user.usecase'
-import { UserRepositoryInterface } from '@/application/repositories'
-import { UUIDGeneratorInterface } from '@/application/adapters/uuid.interface'
-import { HasherInterface } from '@/application/adapters/encrypt.interface'
-import { JwtInterface } from '@/application/adapters/jwt.interface'
 import { mock } from 'jest-mock-extended'
 import MockDate from 'mockdate'
+import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { HasherInterface, JwtInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
 
 describe('CreateUserUseCase', () => {
   let sut: CreateUserUseCase

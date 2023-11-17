@@ -1,4 +1,4 @@
-import { JwtInterface } from '@/application/adapters/jwt.interface'
+import { JwtInterface } from '@/application/interfaces/tools'
 import jwt from 'jsonwebtoken'
 
 export class JwtAdapter implements JwtInterface {

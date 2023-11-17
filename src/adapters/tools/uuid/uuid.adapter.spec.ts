@@ -1,5 +1,5 @@
 
-import { UUIDGeneratorInterface } from '@/application/adapters/uuid.interface'
+import { UUIDGeneratorInterface } from '@/application/interfaces/tools'
 import crypto from 'crypto'
 import { UUIDGenerator } from './uuid.adapter'
 

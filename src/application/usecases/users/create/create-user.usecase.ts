@@ -1,8 +1,8 @@
-import { UUIDGeneratorInterface, HasherInterface, JwtInterface } from '@/application/adapters'
-import { CreateUserUseCaseInterface, InputRequiredFields } from './create-user.types'
+import { UUIDGeneratorInterface, HasherInterface, JwtInterface } from '@/application/interfaces/tools'
+import { CreateUserUseCaseInterface } from './create-user.types'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { isValidEmail, isValidString } from '@/shared/helpers'
-import { UserRepositoryInterface } from '@/application/repositories'
+import { UserRepositoryInterface } from '@/application/interfaces/repositories'
 
 export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
@@ -34,7 +34,7 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
   }
 
   private async validate (input: CreateUserUseCaseInterface.Input): Promise<void> {
-    const requiredFields: Array<keyof InputRequiredFields> = ['name', 'email', 'password', 'passwordConfirmation']
+    const requiredFields: Array<keyof Omit<CreateUserUseCaseInterface.Input, 'permissions'>> = ['name', 'email', 'password', 'passwordConfirmation']
 
     for (const field of requiredFields) {
       if (!isValidString(input[field])) {

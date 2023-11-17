@@ -1,4 +1,4 @@
-import { HasherInterface } from '@/application/adapters'
+import { HasherInterface } from '@/application/interfaces/tools'
 import bcrypt from 'bcrypt'
 
 export class BcryptAdapter implements HasherInterface {
