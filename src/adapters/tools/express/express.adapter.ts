@@ -17,7 +17,7 @@ export const expressAdapter = (controller: ControllerInterface) => {
     const requestId = await requestRepository.create({
       id: uuidGenerator.generate(),
       method: req.method,
-      input: JSON.stringify(obfuscateValue(input.body)),
+      input: JSON.stringify(obfuscateValue({ ...input.body })),
       route: req.url,
       createdAt: new Date()
     })
