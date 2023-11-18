@@ -3,6 +3,7 @@ import { CreateUserUseCaseInterface } from './create-user.types'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { isValidEmail, isValidString } from '@/shared/helpers'
 import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { DEFAULT_USER_INITIAL_STATUS } from '@/shared/constants'
 
 export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
@@ -21,6 +22,7 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
       name: input.name,
       email: input.email,
       password: await this.hashGenerator.hash(input.password),
+      active: DEFAULT_USER_INITIAL_STATUS,
       permissions: input.permissions.join(','),
       createdAt: new Date()
     })

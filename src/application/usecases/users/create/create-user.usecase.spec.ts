@@ -100,6 +100,7 @@ describe('CreateUserUseCase', () => {
       name: 'AnyName',
       email: 'any@email.com',
       password: 'anyHash',
+      active: true,
       permissions: '1,2,3,4',
       createdAt: new Date()
     })

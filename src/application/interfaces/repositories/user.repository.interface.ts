@@ -10,6 +10,7 @@ export type CreateUserRepositoryInput = {
   name: string
   email: string
   password: string
+  active: boolean
   permissions: string
   createdAt: Date
 }
