@@ -1,6 +1,6 @@
 ### Alterar o cadastro de um usuario
 
-⛔ Deve retornar 400 se algum campo obrigatório não for fornecido
+⛔ Deve retornar 400 se o id não for fornecido
 ⛔ Deve retornar 400 se um email inválido for fornecido
 ⛔ Deve retornar 400 se email fornecido já estiver em uso
 ⛔ Deve criptografar a senha do usuário
@@ -11,6 +11,7 @@
 
 ### Input esperado
 {
+    id: string (via params)
     name: string
     email: string
     password: string
