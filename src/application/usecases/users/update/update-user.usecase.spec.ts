@@ -129,12 +129,12 @@ describe('UpdateUserUseCase', () => {
     })
   })
 
-  test('should throw if only id is provided', async () => {
+  test('should throw if Payload is empty', async () => {
     input = {
       id: 'anyId'
     }
     const output = sut.execute(input)
 
-    await expect(output).rejects.toThrowError(new MissingParamError('Only id is provided'))
+    await expect(output).rejects.toThrowError(new MissingParamError('Payload is empty'))
   })
 })

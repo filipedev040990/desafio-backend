@@ -12,84 +12,65 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
     private readonly hashGenerator: HasherInterface) {}
 
   async execute (input: UpdateUserUseCaseInterface.Input): Promise<void> {
-    this.handleInput(input)
-    await this.handleId(input?.id)
-    await this.handleEmail(input?.email)
-    await this.handlePassword(input?.password)
-    this.handleActive(input?.active)
-    this.handleName(input?.name)
-    this.handlePermissions(input?.permissions)
-
+    await this.validateInput(input)
     await this.userRepository.update(this.repositoryInput)
   }
 
-  private async handleId (id?: string): Promise<void> {
-    if (!id) {
+  private async validateInput (input: UpdateUserUseCaseInterface.Input): Promise<void> {
+    if (!input?.name && !input?.email && !input?.password && !input?.active && !input?.permissions?.length) {
+      throw new MissingParamError('Payload is empty')
+    }
+
+    if (!input?.id) {
       throw new MissingParamError('id')
     }
 
-    const user = await this.userRepository.getById(id)
+    const user = await this.userRepository.getById(input.id)
     if (!user) {
       throw new InvalidParamError('User not found')
     }
 
-    this.repositoryInput.id = id
-  }
+    this.repositoryInput.id = input.id
 
-  private async handleEmail (email?: string, id?: string): Promise<void> {
-    if (email) {
-      if (!isValidEmail(email)) {
+    if (input?.email) {
+      if (!isValidEmail(input.email)) {
         throw new InvalidParamError('email')
       }
 
-      const emailExists = await this.userRepository.getByEmail(email)
-      if (emailExists && emailExists.id !== id) {
+      const emailExists = await this.userRepository.getByEmail(input.email)
+      if (emailExists && emailExists.id !== input.id) {
         throw new InvalidParamError('This email is already in use')
       }
 
-      this.repositoryInput.email = email
+      this.repositoryInput.email = input.email
     }
-  }
 
-  private handleName (name?: string): void {
-    if (name) {
-      if (!isValidString(name)) {
+    if (input?.name) {
+      if (!isValidString(input.name)) {
         throw new InvalidParamError('name')
       }
-      this.repositoryInput.name = name
+      this.repositoryInput.name = input.name
     }
-  }
 
-  private async handlePassword (password?: any): Promise<void> {
-    if (password) {
-      this.repositoryInput.password = await this.hashGenerator.hash(password)
+    if (input?.password) {
+      this.repositoryInput.password = await this.hashGenerator.hash(input.password)
     }
-  }
 
-  private handleActive (active?: boolean): void {
-    if (active) {
-      if (typeof active !== 'boolean') {
+    if (input?.active) {
+      if (typeof input.active !== 'boolean') {
         throw new InvalidParamError('This status should be a boolean')
       }
-      this.repositoryInput.active = active
+      this.repositoryInput.active = input.active
     }
-  }
 
-  private handlePermissions (permissions?: number []): void {
-    if (permissions && permissions?.length) {
-      for (const permission of permissions) {
+    if (input?.permissions && input?.permissions?.length) {
+      for (const permission of input.permissions) {
         if (typeof permission !== 'number') {
           throw new InvalidParamError('permissions')
         }
       }
 
-      this.repositoryInput.permissions = permissions.join(',')
-    }
-  }
-
-  private handleInput (input: UpdateUserUseCaseInterface.Input): void {
-    if (!input?.name && !input?.email && !input?.password && !input?.active && !input?.permissions?.length) {
-      throw new MissingParamError('Only id is provided')
+      this.repositoryInput.permissions = input.permissions.join(',')
     }
   }
 }
