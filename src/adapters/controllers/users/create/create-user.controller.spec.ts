@@ -2,7 +2,7 @@ import { HttpRequest } from '@/shared/types'
 import { CreateUserController } from './create-user.controller'
 import { CreateUserUseCaseInterface } from '@/application/usecases/users/create/create-user.types'
 import { mock } from 'jest-mock-extended'
-import { success } from '@/shared/helpers'
+import { serverError, success } from '@/shared/helpers'
 
 describe('CreateUserController', () => {
   let sut: CreateUserController
@@ -40,5 +40,14 @@ describe('CreateUserController', () => {
       access_token: 'anyToken',
       id: 'anyId'
     }))
+  })
+
+  test('should call handleError if CreateUserUseCase throws an exception', async () => {
+    const error = new Error('Error Test')
+    createUserUseCase.execute.mockImplementationOnce(() => { throw error })
+
+    const output = await sut.execute(input)
+
+    expect(output).toEqual(serverError(error))
   })
 })
