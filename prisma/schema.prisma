@@ -19,6 +19,7 @@ model User {
   active      Boolean
   createdAt   DateTime
   updatedAt   DateTime?
+  Token       Token[]
 
   @@map("users")
 }
@@ -34,4 +35,15 @@ model Request {
   updatedAt DateTime?
 
   @@map("requests")
+}
+
+model Token {
+  id        String    @id
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  token     String    @db.LongText()
+  createdAt DateTime
+  updatedAt DateTime?
+
+  @@map("tokens")
 }
