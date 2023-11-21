@@ -9,14 +9,12 @@ export class UserRepository implements UserRepositoryInterface {
     if (!user) {
       return null
     }
-    const permissions: number [] = []
-    user.permissions.split(',').map((permission: string) => permissions.push(+permission))
 
     return {
       id: user.id,
       name: user.name,
       email: user.email,
-      permissions
+      permissions: this.transformStringPermissionsIntoArray(user.permissions)
     }
   }
 
@@ -42,14 +40,11 @@ export class UserRepository implements UserRepositoryInterface {
       return null
     }
 
-    const permissions: number [] = []
-    user.permissions.split(',').map((permission: string) => permissions.push(+permission))
-
     return {
       id: user.id,
       name: user.name,
       email: user.email,
-      permissions
+      permissions: this.transformStringPermissionsIntoArray(user.permissions)
     }
   }
 
@@ -59,5 +54,11 @@ export class UserRepository implements UserRepositoryInterface {
       where: { id },
       data: { ...inputWithoutId, updatedAt }
     })
+  }
+
+  private transformStringPermissionsIntoArray (permissions: string): number [] {
+    const permissionsArray: number [] = []
+    permissions.split(',').map((permission: string) => permissionsArray.push(+permission))
+    return permissionsArray
   }
 }
