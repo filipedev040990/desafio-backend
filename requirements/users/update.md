@@ -5,7 +5,7 @@
 ✅ Deve retornar 400 se um email for fornecido e já estiver em uso
 ✅ Deve criptografar a senha do usuárion se for fornecida
 ✅ Deve atualizar corretamente as permissões do usuário se forem fornecidas
-⛔ Deve retornar 500 em caso de erro
+✅ Deve retornar 500 em caso de erro
 
 
 ### Input esperado

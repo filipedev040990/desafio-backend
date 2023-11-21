@@ -11,7 +11,8 @@ export const expressAdapter = (controller: ControllerInterface) => {
     const uuidGenerator = new UUIDGenerator()
 
     const input: HttpRequest = {
-      body: req.body
+      body: req.body,
+      params: req.params
     }
 
     const requestId = await requestRepository.create({
