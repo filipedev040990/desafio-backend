@@ -1,4 +1,4 @@
-import { UUIDGeneratorInterface, HasherInterface, JwtInterface } from '@/application/interfaces/tools'
+import { UUIDGeneratorInterface, HasherInterface } from '@/application/interfaces/tools'
 import { CreateUserUseCaseInterface } from './create-user.types'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { isValidEmail, isValidString } from '@/shared/helpers'
@@ -9,8 +9,7 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
     private readonly userRepository: UserRepositoryInterface,
     private readonly uuidGenerator: UUIDGeneratorInterface,
-    private readonly hashGenerator: HasherInterface,
-    private readonly tokenGenerator: JwtInterface
+    private readonly hashGenerator: HasherInterface
   ) {
   }
 
@@ -27,11 +26,8 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
       createdAt: new Date()
     })
 
-    const token = await this.tokenGenerator.encrypt({ userId })
-
     return {
-      id: userId,
-      access_token: token
+      id: userId
     }
   }
 

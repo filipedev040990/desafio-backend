@@ -21,7 +21,6 @@ describe('CreateUserController', () => {
       }
     }
     createUserUseCase.execute.mockResolvedValue({
-      access_token: 'anyToken',
       id: 'anyId'
     })
   })
@@ -37,7 +36,6 @@ describe('CreateUserController', () => {
     const output = await sut.execute(input)
 
     expect(output).toEqual(success(201, {
-      access_token: 'anyToken',
       id: 'anyId'
     }))
   })

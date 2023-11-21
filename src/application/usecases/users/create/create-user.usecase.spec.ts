@@ -3,7 +3,7 @@ import { CreateUserUseCase } from './create-user.usecase'
 import { mock } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { UserRepositoryInterface } from '@/application/interfaces/repositories'
-import { HasherInterface, JwtInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
+import { HasherInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
 
 describe('CreateUserUseCase', () => {
   let sut: CreateUserUseCase
@@ -11,10 +11,9 @@ describe('CreateUserUseCase', () => {
   const userRepository = mock<UserRepositoryInterface>()
   const uuidGenerator = mock<UUIDGeneratorInterface>()
   const hashGenerator = mock<HasherInterface>()
-  const tokenGenerator = mock<JwtInterface>()
 
   beforeAll(() => {
-    sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator, tokenGenerator)
+    sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator)
     MockDate.set(new Date())
   })
   beforeEach(() => {
@@ -30,7 +29,6 @@ describe('CreateUserUseCase', () => {
     userRepository.create.mockResolvedValue('anyUUID')
     uuidGenerator.generate.mockReturnValue('anyUUID')
     hashGenerator.hash.mockResolvedValue('anyHash')
-    tokenGenerator.encrypt.mockResolvedValue('anyToken')
   })
   afterAll(() => {
     MockDate.reset()
@@ -106,16 +104,9 @@ describe('CreateUserUseCase', () => {
     })
   })
 
-  test('should call tokenGenerator once and with correct userId', async () => {
-    await sut.execute(input)
-
-    expect(tokenGenerator.encrypt).toHaveBeenCalledTimes(1)
-    expect(tokenGenerator.encrypt).toHaveBeenCalledWith({ userId: 'anyUUID' })
-  })
-
-  test('should return a token on success', async () => {
+  test('should return a id on success', async () => {
     const output = await sut.execute(input)
 
-    expect(output).toEqual({ id: 'anyUUID', access_token: 'anyToken' })
+    expect(output).toEqual({ id: 'anyUUID' })
   })
 })

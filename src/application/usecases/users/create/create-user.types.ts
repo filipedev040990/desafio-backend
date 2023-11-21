@@ -13,6 +13,5 @@ export namespace CreateUserUseCaseInterface {
 
   export type Output = {
     id: string
-    access_token: string
   }
 }
