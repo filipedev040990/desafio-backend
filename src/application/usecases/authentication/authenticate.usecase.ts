@@ -3,14 +3,14 @@ import { AuthenticateUseCaseInterface } from './authenticate.types'
 import { InvalidParamError, MissingParamError, UnauthorizedError } from '@/shared/errors'
 import { isValidEmail } from '@/shared/helpers'
 import { HasherInterface, JwtInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
-import { TokenRepository } from '@/application/interfaces/repositories/token.repository'
+import { TokenRepositoryInterface } from '@/application/interfaces/repositories/token.repository'
 
 export class AuthenticateUseCase implements AuthenticateUseCaseInterface {
   constructor (
     private readonly userRepository: UserRepositoryInterface,
     private readonly hasher: HasherInterface,
-    private readonly tokenGenerator: JwtInterface,
-    private readonly tokenRepository: TokenRepository,
+    private readonly jwtToken: JwtInterface,
+    private readonly tokenRepository: TokenRepositoryInterface,
     private readonly uuidGenerator: UUIDGeneratorInterface
   ) {}
 
@@ -29,17 +29,7 @@ export class AuthenticateUseCase implements AuthenticateUseCaseInterface {
       throw new UnauthorizedError()
     }
 
-    const token = await this.tokenGenerator.encrypt({
-      userId: user.id,
-      permissions: user.permissions
-    })
-
-    await this.tokenRepository.save({
-      id: this.uuidGenerator.generate(),
-      userId: user.id,
-      token,
-      createdAt: new Date()
-    })
+    const token = await this.getToken(user)
 
     return { token }
   }
@@ -56,5 +46,48 @@ export class AuthenticateUseCase implements AuthenticateUseCaseInterface {
     if (!isValidEmail(input.email)) {
       throw new InvalidParamError('email')
     }
+  }
+
+  private async getToken (user: UserAllInfoOutput): Promise<string> {
+    let token = await this.tokenRepository.getByUserId(user!.id)
+
+    const generateToken = async (userId: string, permissions: number []): Promise<string> => {
+      return await this.jwtToken.encrypt({
+        userId,
+        permissions
+      })
+    }
+
+    const updateToken = async (user: UserAllInfoOutput): Promise<string> => {
+      token = await generateToken(user!.id, user!.permissions)
+      await this.tokenRepository.update({
+        userId: user!.id,
+        token,
+        updatedAt: new Date()
+      })
+      return token
+    }
+
+    const saveToken = async (user: UserAllInfoOutput): Promise<string> => {
+      token = await generateToken(user!.id, user!.permissions)
+      await this.tokenRepository.save({
+        id: this.uuidGenerator.generate(),
+        userId: user!.id,
+        token,
+        createdAt: new Date()
+      })
+      return token
+    }
+
+    if (!token) {
+      return await saveToken(user)
+    }
+
+    const isValidToken = await this.jwtToken.decrypt(token)
+    if (isValidToken) {
+      return token
+    }
+
+    return await updateToken(user)
   }
 }

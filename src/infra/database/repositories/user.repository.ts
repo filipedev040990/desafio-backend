@@ -1,5 +1,5 @@
 
-import { UserRepositoryInterface, UserOutput, CreateUserRepositoryInput, UpdateUserRepositoryInput } from '@/application/interfaces/repositories'
+import { UserRepositoryInterface, UserOutput, CreateUserRepositoryInput, UpdateUserRepositoryInput, UserAllInfoOutput } from '@/application/interfaces/repositories'
 import { prismaClient } from '../config/prisma-client'
 
 export class UserRepository implements UserRepositoryInterface {
@@ -54,6 +54,23 @@ export class UserRepository implements UserRepositoryInterface {
       where: { id },
       data: { ...inputWithoutId, updatedAt }
     })
+  }
+
+  async getAllInfo (email: string): Promise<UserAllInfoOutput> {
+    const user = await prismaClient.user.findFirst({ where: { email } })
+    if (!user) {
+      return null
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      active: user.active ? 1 : 0,
+      permissions: this.transformStringPermissionsIntoArray(user.permissions),
+      password: user.password,
+      createdAt: user.createdAt
+    }
   }
 
   private transformStringPermissionsIntoArray (permissions: string): number [] {

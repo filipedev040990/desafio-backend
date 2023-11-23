@@ -3,7 +3,7 @@ import { AuthenticateUseCase } from './authenticate.usecase'
 import { UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { InvalidParamError, MissingParamError, UnauthorizedError } from '@/shared/errors'
 import { HasherInterface, JwtInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
-import { TokenRepository } from '@/application/interfaces/repositories/token.repository'
+import { TokenRepositoryInterface } from '@/application/interfaces/repositories/token.repository'
 import MockDate from 'mockdate'
 
 describe('AuthenticateUseCase', () => {
@@ -13,7 +13,7 @@ describe('AuthenticateUseCase', () => {
   const userRepository = mock<UserRepositoryInterface>()
   const hasher = mock<HasherInterface>()
   const tokenGenerator = mock<JwtInterface>()
-  const tokenRepository = mock<TokenRepository>()
+  const tokenRepository = mock<TokenRepositoryInterface>()
   const uuidGenerator = mock<UUIDGeneratorInterface>()
 
   beforeEach(() => {
@@ -35,6 +35,7 @@ describe('AuthenticateUseCase', () => {
 
     hasher.compare.mockResolvedValue(true)
     tokenGenerator.encrypt.mockResolvedValue('anyToken')
+    tokenRepository.getByUserId.mockResolvedValue(null)
     uuidGenerator.generate.mockReturnValue('anyUUID')
   })
 
@@ -111,6 +112,21 @@ describe('AuthenticateUseCase', () => {
     const output = sut.execute(input)
 
     await expect(output).rejects.toThrowError(new UnauthorizedError())
+  })
+
+  test('should call Token.getByUserId once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(tokenRepository.getByUserId).toHaveBeenCalledTimes(1)
+    expect(tokenRepository.getByUserId).toHaveBeenCalledWith('anyUserId')
+  })
+
+  test('should not call Token.save if Token.getByUserId returns token', async () => {
+    tokenRepository.getByUserId.mockResolvedValueOnce('anyToken')
+
+    await sut.execute(input)
+
+    expect(tokenRepository.save).toHaveBeenCalledTimes(0)
   })
 
   test('should call Token.save once and with correct values', async () => {
