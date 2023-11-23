@@ -15,7 +15,7 @@ export class JwtAdapter implements JwtInterface {
     try {
       return jwt.verify(token, this.secretKey)
     } catch (error: any) {
-      throw new Error(error)
+      return null
     }
   }
 }

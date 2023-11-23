@@ -17,6 +17,7 @@ export class ServerError extends Error {
     super('Internal server error')
     this.name = 'ServerError'
     this.stack = error?.stack
+    this.message = error?.message ?? 'Unknow error'
   }
 }
 
