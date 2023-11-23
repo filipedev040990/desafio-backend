@@ -17,7 +17,7 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
   }
 
   private async validateInput (input: UpdateUserUseCaseInterface.Input): Promise<void> {
-    if (!input?.name && !input?.email && !input?.password && !input?.active && !input?.permissions?.length) {
+    if (!input?.name && !input?.email && !input?.password && (input?.active === undefined) && !input?.permissions?.length) {
       throw new MissingParamError('Payload is empty')
     }
 
@@ -56,7 +56,7 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
       this.repositoryInput.password = await this.hashGenerator.hash(input.password)
     }
 
-    if (input?.active) {
+    if (input.active !== undefined) {
       if (typeof input.active !== 'boolean') {
         throw new InvalidParamError('This status should be a boolean')
       }

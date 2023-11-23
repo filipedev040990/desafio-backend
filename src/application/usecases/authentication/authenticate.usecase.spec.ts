@@ -114,6 +114,22 @@ describe('AuthenticateUseCase', () => {
     await expect(output).rejects.toThrowError(new UnauthorizedError())
   })
 
+  test('should throw if user is not active', async () => {
+    userRepository.getAllInfo.mockResolvedValueOnce({
+      id: 'anyUserId',
+      name: 'anyUserName',
+      email: input.email,
+      active: 0,
+      password: 'anyhash',
+      permissions: [1, 2, 3],
+      createdAt: new Date()
+    })
+
+    const output = sut.execute(input)
+
+    await expect(output).rejects.toThrowError(new UnauthorizedError())
+  })
+
   test('should call Token.getByUserId once and with correct values', async () => {
     await sut.execute(input)
 

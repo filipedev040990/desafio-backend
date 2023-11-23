@@ -19,7 +19,7 @@ export class AuthenticateUseCase implements AuthenticateUseCaseInterface {
 
     const user: UserAllInfoOutput = await this.userRepository.getAllInfo(input.email)
 
-    if (!user) {
+    if (!user || (user && !user.active)) {
       throw new UnauthorizedError()
     }
 
