@@ -34,3 +34,10 @@ export class UnauthorizedError extends Error {
     this.name = 'UnauthorizedError'
   }
 }
+
+export class JwtMissingError extends Error {
+  constructor () {
+    super('JWT token is missing')
+    this.name = 'JwtMissingError'
+  }
+}

@@ -8,11 +8,11 @@ export const handleError = (error: any): HttpResponse => {
   }
 
   if (error instanceof UnauthorizedError) {
-    return unauthorized(error)
+    return unauthorized()
   }
 
   if (error instanceof ForbiddenError) {
-    return forbiddenError(error)
+    return forbiddenError()
   }
 
   return serverError(error)
