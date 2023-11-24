@@ -11,5 +11,6 @@ export namespace AuthenticateUseCaseInterface {
 
   export type Output = {
     token: string
+    userId: string
   }
 }

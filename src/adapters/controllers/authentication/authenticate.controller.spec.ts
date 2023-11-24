@@ -19,7 +19,7 @@ describe('AuthenticateController', () => {
       }
     }
 
-    authenticateUseCase.execute.mockResolvedValue({ token: 'anyToken' })
+    authenticateUseCase.execute.mockResolvedValue({ token: 'anyToken', userId: 'anyUserId' })
   })
 
   test('should call AuthenticateUseCase once and with correct values', async () => {
@@ -29,10 +29,10 @@ describe('AuthenticateController', () => {
     expect(authenticateUseCase.execute).toHaveBeenCalledWith(input.body)
   })
 
-  test('should return 200 and a token on success', async () => {
+  test('should return 200 and correct output success', async () => {
     const output = await sut.execute(input)
 
-    expect(output).toEqual(success(200, { token: 'anyToken' }))
+    expect(output).toEqual(success(200, { token: 'anyToken', userId: 'anyUserId' }))
   })
 
   test('should return 500 if AuthenticateUseCase throws an exception', async () => {

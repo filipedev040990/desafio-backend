@@ -5,6 +5,7 @@ export interface RequestRepositoryInterface {
 
 export type CreateRequestRepositoryInput = {
   id: string
+  userId?: string
   method: string
   route: string
   input: string
@@ -13,6 +14,7 @@ export type CreateRequestRepositoryInput = {
 
 export type UpdateRequestRepositotyInput = {
   requestId: string
+  userId?: string
   status: number
   output: string
   updatedAt: Date

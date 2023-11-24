@@ -20,12 +20,14 @@ model User {
   createdAt   DateTime
   updatedAt   DateTime?
   Token       Token[]
+  Request     Request[]
 
   @@map("users")
 }
 
 model Request {
   id        String    @id
+  user      User?     @relation(fields: [userId], references: [id])
   method    String
   route     String
   input     String    @db.LongText()
@@ -33,6 +35,7 @@ model Request {
   status    Int?
   createdAt DateTime
   updatedAt DateTime?
+  userId    String?
 
   @@map("requests")
 }

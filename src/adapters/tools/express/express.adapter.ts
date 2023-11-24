@@ -17,6 +17,7 @@ export const expressAdapter = (controller: ControllerInterface) => {
 
     const requestId = await requestRepository.create({
       id: uuidGenerator.generate(),
+      userId: req?.userId ?? undefined,
       method: req.method,
       input: JSON.stringify(obfuscateValue({ ...input.body })),
       route: req.url,
@@ -28,6 +29,7 @@ export const expressAdapter = (controller: ControllerInterface) => {
 
     await requestRepository.update({
       requestId,
+      userId: output?.userId ?? undefined,
       status: statusCode,
       output: JSON.stringify(output),
       updatedAt: new Date()

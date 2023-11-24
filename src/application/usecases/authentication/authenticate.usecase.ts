@@ -31,7 +31,7 @@ export class AuthenticateUseCase implements AuthenticateUseCaseInterface {
 
     const token = await this.getToken(user)
 
-    return { token }
+    return { token, userId: user.id }
   }
 
   private validateInput (input: AuthenticateUseCaseInterface.Input): void {

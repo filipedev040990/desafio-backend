@@ -8,12 +8,15 @@ export class RequestsRepository implements RequestRepositoryInterface {
   }
 
   async update (input: UpdateRequestRepositotyInput): Promise<void> {
+    const data: Omit<UpdateRequestRepositotyInput, 'requestId'> = {
+      status: input.status,
+      output: input.output,
+      updatedAt: input.updatedAt,
+      userId: input.userId
+    }
+
     await prismaClient.request.update({
-      data: {
-        status: input.status,
-        output: input.output,
-        updatedAt: input.updatedAt
-      },
+      data,
       where: {
         id: input.requestId
       }

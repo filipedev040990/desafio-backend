@@ -92,10 +92,10 @@ describe('AuthenticateUseCase', () => {
     expect(tokenGenerator.encrypt).toHaveBeenCalledWith({ userId: 'anyUserId', permissions: [1, 2, 3] })
   })
 
-  test('should return a token on success', async () => {
+  test('should return a correct output on success', async () => {
     const output = await sut.execute(input)
 
-    expect(output).toEqual({ token: 'anyToken' })
+    expect(output).toEqual({ token: 'anyToken', userId: 'anyUserId' })
   })
 
   test('should throw if UserRepository.getByEmail returns null', async () => {
