@@ -56,7 +56,7 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
       this.repositoryInput.password = await this.hashGenerator.hash(input.password)
     }
 
-    if (input.active !== undefined) {
+    if (input.active !== undefined && input.active !== null) {
       if (typeof input.active !== 'boolean') {
         throw new InvalidParamError('This status should be a boolean')
       }
