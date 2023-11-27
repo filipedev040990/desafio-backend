@@ -50,3 +50,14 @@ model Token {
 
   @@map("tokens")
 }
+
+model Permissions {
+  id             String    @id
+  method         String
+  route          String
+  permissionCode Int       @unique
+  createdAt      DateTime
+  updatedAt      DateTime?
+
+  @@map("permissions")
+}

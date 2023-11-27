@@ -23,7 +23,7 @@ export class ServerError extends Error {
 
 export class ForbiddenError extends Error {
   constructor () {
-    super('Forbidden')
+    super('Access denied')
     this.name = 'ForbiddenError'
   }
 }

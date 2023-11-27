@@ -12,7 +12,7 @@ export const handleError = (error: any): HttpResponse => {
   }
 
   if (error instanceof ForbiddenError) {
-    return forbiddenError()
+    return forbiddenError(error)
   }
 
   return serverError(error)
