@@ -12,4 +12,19 @@ export class PermissionRepository implements PermissionRepositoryInterface {
 
     return permission ? permission.permissionCode : null
   }
+
+  async getPermissionsCode (): Promise<number[] | null> {
+    const permissions = await prismaClient.permissions.findMany()
+    if (!permissions) {
+      return null
+    }
+
+    const permissionsCode: number [] = []
+
+    for (const permission of permissions) {
+      permissionsCode.push(permission.permissionCode)
+    }
+
+    return permissionsCode
+  }
 }

@@ -4,6 +4,7 @@ import { mock } from 'jest-mock-extended'
 import { UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { HasherInterface } from '@/application/interfaces/tools'
 import MockDate from 'mockdate'
+import { PermissionRepositoryInterface } from '@/application/interfaces/repositories/permission.repository.interface'
 
 describe('UpdateUserUseCase', () => {
   let sut: UpdateUserUseCase
@@ -11,9 +12,10 @@ describe('UpdateUserUseCase', () => {
 
   const userRepository = mock<UserRepositoryInterface>()
   const hashGenerator = mock<HasherInterface>()
+  const permissionRepository = mock<PermissionRepositoryInterface>()
 
   beforeEach(() => {
-    sut = new UpdateUserUseCase(userRepository, hashGenerator)
+    sut = new UpdateUserUseCase(userRepository, hashGenerator, permissionRepository)
 
     userRepository.getById.mockResolvedValue({
       id: 'anyUserId',
@@ -22,6 +24,7 @@ describe('UpdateUserUseCase', () => {
       permissions: [1, 2, 3]
     })
     hashGenerator.hash.mockResolvedValue('anyHash')
+    permissionRepository.getPermissionsCode.mockResolvedValue([1, 2, 3, 4])
     input = {
       id: 'anyId',
       email: 'email@email.com',
@@ -104,6 +107,21 @@ describe('UpdateUserUseCase', () => {
     const output = sut.execute(input)
 
     await expect(output).rejects.toThrowError(new InvalidParamError('This status should be a boolean'))
+  })
+
+  test('should call PermissionRepository.getPermissionsCode once', async () => {
+    await sut.execute(input)
+
+    expect(permissionRepository.getPermissionsCode).toHaveBeenCalledTimes(1)
+  })
+
+  test('should throw if a invalid permission is provided', async () => {
+    permissionRepository.getPermissionsCode.mockResolvedValueOnce([1, 2])
+    input.permissions = [3, 4]
+
+    const output = sut.execute(input)
+
+    await expect(output).rejects.toThrowError(new InvalidParamError('permissions'))
   })
 
   test('should throw if permissions is provided and isinvalid', async () => {

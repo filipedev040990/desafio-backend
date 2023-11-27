@@ -4,12 +4,14 @@ import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { isValidEmail, isValidString } from '@/shared/helpers'
 import { UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { DEFAULT_USER_INITIAL_STATUS } from '@/shared/constants'
+import { PermissionRepositoryInterface } from '@/application/interfaces/repositories/permission.repository.interface'
 
 export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
     private readonly userRepository: UserRepositoryInterface,
     private readonly uuidGenerator: UUIDGeneratorInterface,
-    private readonly hashGenerator: HasherInterface
+    private readonly hashGenerator: HasherInterface,
+    private readonly permissionRepository: PermissionRepositoryInterface
   ) {
   }
 
@@ -43,6 +45,18 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
     if (!input.permissions || input.permissions.length < 1) {
       throw new MissingParamError('permissions')
     }
+
+    const permissionsCode = await this.permissionRepository.getPermissionsCode()
+    if (!permissionsCode) {
+      throw new InvalidParamError('Permissions not found')
+    }
+
+    input.permissions.map((permission: number) => {
+      if (!permissionsCode.includes(permission)) {
+        throw new InvalidParamError('Invalid permission is provided')
+      }
+      return true
+    })
 
     if (input.password !== input.passwordConfirmation) {
       throw new InvalidParamError('passwordConfirmation')

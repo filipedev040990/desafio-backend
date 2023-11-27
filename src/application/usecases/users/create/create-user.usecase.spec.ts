@@ -4,6 +4,7 @@ import { mock } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { HasherInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
+import { PermissionRepositoryInterface } from '@/application/interfaces/repositories/permission.repository.interface'
 
 describe('CreateUserUseCase', () => {
   let sut: CreateUserUseCase
@@ -11,9 +12,10 @@ describe('CreateUserUseCase', () => {
   const userRepository = mock<UserRepositoryInterface>()
   const uuidGenerator = mock<UUIDGeneratorInterface>()
   const hashGenerator = mock<HasherInterface>()
+  const permissionRepository = mock<PermissionRepositoryInterface>()
 
   beforeAll(() => {
-    sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator)
+    sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator, permissionRepository)
     MockDate.set(new Date())
   })
   beforeEach(() => {
@@ -29,6 +31,7 @@ describe('CreateUserUseCase', () => {
     userRepository.create.mockResolvedValue('anyUUID')
     uuidGenerator.generate.mockReturnValue('anyUUID')
     hashGenerator.hash.mockResolvedValue('anyHash')
+    permissionRepository.getPermissionsCode.mockResolvedValue([1, 2, 3, 4])
   })
   afterAll(() => {
     MockDate.reset()
@@ -76,6 +79,21 @@ describe('CreateUserUseCase', () => {
     const output = sut.execute(input)
 
     await expect(output).rejects.toThrowError(new InvalidParamError('This email is already in use'))
+  })
+
+  test('should call PermissionRepository.getPermissionsCode once', async () => {
+    await sut.execute(input)
+
+    expect(permissionRepository.getPermissionsCode).toHaveBeenCalledTimes(1)
+  })
+
+  test('should throw if a invalid permission is provided', async () => {
+    permissionRepository.getPermissionsCode.mockResolvedValueOnce([1, 2])
+    input.permissions = [3, 4]
+
+    const output = sut.execute(input)
+
+    await expect(output).rejects.toThrowError(new InvalidParamError('Invalid permission is provided'))
   })
 
   test('should call UUIDGenerator once', async () => {

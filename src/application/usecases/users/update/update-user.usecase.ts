@@ -3,13 +3,16 @@ import { UpdateUserUseCaseInterface } from './update-user.types'
 import { UpdateUserRepositoryInput, UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { isValidEmail, isValidString } from '@/shared/helpers'
 import { HasherInterface } from '@/application/interfaces/tools'
+import { PermissionRepositoryInterface } from '@/application/interfaces/repositories/permission.repository.interface'
 
 export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
   private repositoryInput: UpdateUserRepositoryInput = { id: '', updatedAt: new Date() }
 
   constructor (
     private readonly userRepository: UserRepositoryInterface,
-    private readonly hashGenerator: HasherInterface) {}
+    private readonly hashGenerator: HasherInterface,
+    private readonly permissionRepository: PermissionRepositoryInterface
+  ) {}
 
   async execute (input: UpdateUserUseCaseInterface.Input): Promise<void> {
     await this.validateInput(input)
@@ -64,8 +67,13 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
     }
 
     if (input?.permissions && input?.permissions?.length) {
+      const permissionsCode = await this.permissionRepository.getPermissionsCode()
+      if (!permissionsCode) {
+        throw new InvalidParamError('Permissions not found')
+      }
+
       for (const permission of input.permissions) {
-        if (typeof permission !== 'number') {
+        if (typeof permission !== 'number' || !permissionsCode.includes(permission)) {
           throw new InvalidParamError('permissions')
         }
       }
