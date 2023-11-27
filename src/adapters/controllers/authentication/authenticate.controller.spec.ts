@@ -1,8 +1,8 @@
 import { AuthenticateUseCaseInterface } from '@/application/usecases/authentication/authenticate.types'
 import { HttpRequest } from '@/shared/types'
 import { AuthenticateController } from './authenticate.controller'
-import { mock } from 'jest-mock-extended'
 import { serverError, success } from '@/shared/helpers'
+import { mock } from 'jest-mock-extended'
 
 describe('AuthenticateController', () => {
   let sut: AuthenticateController

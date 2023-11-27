@@ -1,30 +1,38 @@
-import { HttpRequest, HttpResponse } from '@/shared/types'
-import { AuthenticationMiddlewareInterface } from './authentication.types'
-import { success } from '@/shared/helpers'
-import { ForbiddenError, UnauthorizedError } from '@/shared/errors'
-import { JwtAdapter } from '@/adapters/tools/token/jwt.adapter'
-import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { UserRepository } from '@/infra/database/repositories'
+import { jwtTokenFactory } from '@/infra/factories/tools/jwt.factory'
+import { UnauthorizedError, ForbiddenError } from '@/shared/errors'
+import { handleError } from '@/shared/helpers/handle-error.helper'
+import { Request, Response, NextFunction } from 'express'
 
-export class AuthenticationMiddleware implements AuthenticationMiddlewareInterface {
-  constructor (
-    private readonly jwtToken: JwtAdapter,
-    private readonly userRepository: UserRepositoryInterface
-  ) {}
+export const authenticationMiddleware = (): any => {
+  const jwtToken = jwtTokenFactory()
+  const userRepository = new UserRepository()
 
-  async execute (input: HttpRequest): Promise<HttpResponse> {
-    if (input?.headers?.authorization) {
-      const token = input.headers.authorization.split('Bearer ')[1]
-      const data: any = await this.jwtToken.decrypt(token)
-
-      if (data) {
-        const user = await this.userRepository.getById(data.userId)
-        if (user) {
-          return success(200, { userId: user.id, permissions: user.permissions })
-        }
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req?.headers?.authorization) {
+        throw new ForbiddenError()
       }
-      throw new UnauthorizedError()
-    }
 
-    throw new ForbiddenError()
+      const token = req.headers.authorization.split('Bearer ')[1]
+      const data: any = await jwtToken.decrypt(token)
+
+      if (!data) {
+        throw new UnauthorizedError()
+      }
+
+      const user = await userRepository.getById(data.userId)
+
+      if (!user) {
+        throw new UnauthorizedError()
+      }
+
+      req.userId = user.id
+      req.permissions = user.permissions
+      return next()
+    } catch (err: any) {
+      const error = handleError(err)
+      res.status(error.statusCode).json({ error: error.body.message })
+    }
   }
 }
