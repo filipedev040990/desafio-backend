@@ -1,4 +1,5 @@
 import { JwtInterface } from '@/application/interfaces/tools'
+import { handleError } from '@/shared/helpers/handle-error.helper'
 import jwt from 'jsonwebtoken'
 
 export class JwtAdapter implements JwtInterface {
@@ -15,7 +16,7 @@ export class JwtAdapter implements JwtInterface {
     try {
       return jwt.verify(token, this.secretKey)
     } catch (error: any) {
-      return null
+      return handleError(error)
     }
   }
 }

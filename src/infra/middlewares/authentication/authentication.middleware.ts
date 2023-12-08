@@ -1,30 +1,57 @@
-import { HttpRequest, HttpResponse } from '@/shared/types'
-import { AuthenticationMiddlewareInterface } from './authentication.types'
-import { success } from '@/shared/helpers'
-import { ForbiddenError, UnauthorizedError } from '@/shared/errors'
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { JwtAdapter } from '@/adapters/tools/token/jwt.adapter'
-import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { UserOutput } from '@/application/interfaces/repositories'
+import { UserRepository } from '@/infra/database/repositories'
+import { TokenRepository } from '@/infra/database/repositories/token.repository'
+import { ForbiddenError, UnauthorizedError } from '@/shared/errors'
+import { isValidString } from '@/shared/helpers'
+import { handleError } from '@/shared/helpers/handle-error.helper'
+import { NextFunction, Request, Response } from 'express'
 
-export class AuthenticationMiddleware implements AuthenticationMiddlewareInterface {
-  constructor (
-    private readonly jwtToken: JwtAdapter,
-    private readonly userRepository: UserRepositoryInterface
-  ) {}
+export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = await getToken(req?.headers)
+    const data = decryptToken(token)
 
-  async execute (input: HttpRequest): Promise<HttpResponse> {
-    if (input?.headers?.authorization) {
-      const token = input.headers.authorization.split('Bearer ')[1]
-      const data: any = await this.jwtToken.decrypt(token)
-
-      if (data) {
-        const user = await this.userRepository.getById(data.userId)
-        if (user) {
-          return success(200, { userId: user.id, permissions: user.permissions })
-        }
+    if (data) {
+      const user = await getUser(data.userId)
+      if (user) {
+        req.userId = user.id
+        req.permissions = user.permissions
+        return next()
       }
-      throw new UnauthorizedError()
     }
 
+    throw new UnauthorizedError()
+  } catch (error) {
+    const interpretedError = handleError(error)
+    res.status(interpretedError.statusCode).json(interpretedError.body)
+  }
+}
+
+const getToken = async (headers: any): Promise<string> => {
+  if (!isValidString(headers?.authorization)) {
     throw new ForbiddenError()
   }
+
+  const tokenRepository = new TokenRepository()
+  const token = headers.authorization.split('Bearer ')[1]
+  const tokenExists = await tokenRepository.getByToken(token)
+
+  if (!tokenExists) {
+    throw new UnauthorizedError()
+  }
+  return token
+}
+
+const decryptToken = (token: string): any => {
+  const jwtToken = new JwtAdapter(process.env.SECRET_KEY ?? '')
+  const data = jwtToken.decrypt(token)
+  return data ?? null
+}
+
+const getUser = async (userId: string): Promise<UserOutput> => {
+  const userRepository = new UserRepository()
+  const user = await userRepository.getById(userId)
+  return user ?? null
 }
