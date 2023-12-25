@@ -27,7 +27,7 @@ describe('UpdateUserUseCase', () => {
       email: 'email@email.com',
       name: 'AnyName',
       password: '123',
-      active: true,
+      active: 1,
       permissions: [1, 2, 3]
     }
   })
@@ -106,7 +106,7 @@ describe('UpdateUserUseCase', () => {
     await expect(output).rejects.toThrowError(new InvalidParamError('This status should be a boolean'))
   })
 
-  test('should throw if permissions is provided and isinvalid', async () => {
+  test('should throw if permissions is provided and is invalid', async () => {
     input.permissions = ['1', '2']
 
     const output = sut.execute(input)
@@ -123,7 +123,7 @@ describe('UpdateUserUseCase', () => {
       updatedAt: new Date(),
       email: 'email@email.com',
       password: 'anyHash',
-      active: true,
+      active: 1,
       name: 'AnyName',
       permissions: '1,2,3'
     })

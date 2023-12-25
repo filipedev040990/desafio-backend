@@ -1,1 +1,1 @@
-export const DEFAULT_USER_INITIAL_STATUS = true
+export const DEFAULT_USER_INITIAL_STATUS = 1

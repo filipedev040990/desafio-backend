@@ -57,7 +57,7 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
     }
 
     if (input.active !== undefined && input.active !== null) {
-      if (typeof input.active !== 'boolean') {
+      if (typeof input.active !== 'number') {
         throw new InvalidParamError('This status should be a boolean')
       }
       this.repositoryInput.active = input.active

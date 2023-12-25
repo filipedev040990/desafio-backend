@@ -21,7 +21,7 @@ export type CreateUserRepositoryInput = {
   name: string
   email: string
   password: string
-  active: boolean
+  active: number
   permissions: string
   createdAt: Date
 }
@@ -31,7 +31,7 @@ export type UpdateUserRepositoryInput = {
   name?: string
   email?: string
   password?: string
-  active?: boolean
+  active?: number
   permissions?: string
   updatedAt: Date
 }

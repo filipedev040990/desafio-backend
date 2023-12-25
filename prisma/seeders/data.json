@@ -1,0 +1,41 @@
+{
+    "tables": {
+        "user": {
+            "data": [{
+                "id": "69cf1cf4-d350-4252-ae3e-635e31cbcd91",
+                "name": "Administrator",
+                "email": "admin@gmail.com",
+                "password": "$2a$12$XC3e0AqD8vJYOvSiBpqiJ.zggRGRxG6Rv5L3T1TZGl/JDFv8C8L5m",
+                "permissions": "1,2",
+                "createdAt": "2023-12-06T23:59:59.999Z",
+                "active": 1
+            },
+            {
+                "id": "69cf1cf4-d350-4252-ae3e-635e31cbcd92",
+                "name": "Zé das Couves",
+                "email": "zedascouves@gmail.com",
+                "password": "$2a$12$XC3e0AqD8vJYOvSiBpqiJ.zggRGRxG6Rv5L3T1TZGl/JDFv8C8L5m",
+                "permissions": "1",
+                "createdAt": "2023-12-06T23:59:59.999Z",
+                "active": 1
+            }]
+        },
+        "permission": {
+            "data": [{
+                "id": "5f9a69cd-346f-49b0-a466-3c0eb712739a",
+                "method": "POST",
+                "route": "/user",
+                "permissionCode": 1,
+                "createdAt": "2023-12-13T23:59:59.999Z",
+                "updatedAt": null
+            },{
+                "id": "9330027a-0d72-4db0-8160-dc2081de2fa5",
+                "method": "PATCH",
+                "route": "/user/:id",
+                "permissionCode": 2,
+                "createdAt": "2023-12-13T23:59:59.999Z",
+                "updatedAt": null
+            }]
+        }
+    }
+}

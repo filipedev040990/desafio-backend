@@ -19,7 +19,7 @@ describe('UpdateUserController', () => {
         name: 'AnyName',
         email: 'email@email.com',
         password: 'anyPassword',
-        active: false,
+        active: 0,
         permissions: [1, 3]
       }
     }
@@ -34,7 +34,7 @@ describe('UpdateUserController', () => {
       name: 'AnyName',
       email: 'email@email.com',
       password: 'anyPassword',
-      active: false,
+      active: 0,
       permissions: [1, 3]
     })
   })
@@ -50,7 +50,7 @@ describe('UpdateUserController', () => {
       name: 'AnyName',
       email: 'email@email.com',
       password: 'anyPassword',
-      active: false,
+      active: 0,
       permissions: [1, 3]
     })
   })
@@ -66,7 +66,7 @@ describe('UpdateUserController', () => {
       name: null,
       email: 'email@email.com',
       password: 'anyPassword',
-      active: false,
+      active: 0,
       permissions: [1, 3]
     })
   })
@@ -82,7 +82,7 @@ describe('UpdateUserController', () => {
       name: 'AnyName',
       email: null,
       password: 'anyPassword',
-      active: false,
+      active: 0,
       permissions: [1, 3]
     })
   })
@@ -98,7 +98,7 @@ describe('UpdateUserController', () => {
       name: 'AnyName',
       email: 'email@email.com',
       password: null,
-      active: false,
+      active: 0,
       permissions: [1, 3]
     })
   })
@@ -130,7 +130,7 @@ describe('UpdateUserController', () => {
       name: 'AnyName',
       email: 'email@email.com',
       password: 'anyPassword',
-      active: false,
+      active: 0,
       permissions: null
     })
   })

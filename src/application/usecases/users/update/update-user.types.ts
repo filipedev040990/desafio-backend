@@ -8,7 +8,7 @@ export namespace UpdateUserUseCaseInterface {
     name?: string
     email?: string
     password?: string
-    active?: boolean
+    active?: number
     permissions?: number []
   }
 }

@@ -16,7 +16,7 @@ model User {
   email       String    @unique
   password    String
   permissions String
-  active      Boolean
+  active      Int
   createdAt   DateTime
   updatedAt   DateTime?
   Token       Token[]
@@ -60,4 +60,13 @@ model Permission {
   updatedAt      DateTime?
 
   @@map("permissions")
+}
+
+model ExecutedSeeders {
+  id         String   @id
+  table      String
+  hash       String
+  executedAt DateTime
+
+  @@map("executed_seeders")
 }
