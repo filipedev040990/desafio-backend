@@ -7,34 +7,32 @@ import { obfuscateValue } from '@/shared/helpers/obfuscate-value.helper'
 
 export const expressAdapter = (controller: ControllerInterface) => {
   return async (req: Request, res: Response) => {
-    const requestRepository = new RequestsRepository()
-    const uuidGenerator = new UUIDGenerator()
-
     const input: HttpRequest = {
       body: req.body,
       params: req.params
     }
 
-    const requestId = await requestRepository.create({
-      id: uuidGenerator.generate(),
-      userId: req?.userId ?? undefined,
-      method: req.method,
-      input: JSON.stringify(obfuscateValue({ ...input.body })),
-      route: req.url,
-      createdAt: new Date()
-    })
-
     const { statusCode, body } = await controller.execute(input)
     const output = statusCode >= 500 ? { error: body.error } : body
 
-    await requestRepository.update({
-      requestId,
-      userId: output?.userId ?? undefined,
-      status: statusCode,
-      output: JSON.stringify(output),
-      updatedAt: new Date()
-    })
+    await addRequestLog(req, input, output, statusCode)
 
     res.status(statusCode).json(output)
   }
+}
+
+const addRequestLog = async (req: Request, input: HttpRequest, output: any, statusCode: number): Promise<void> => {
+  const requestRepository = new RequestsRepository()
+  const uuidGenerator = new UUIDGenerator()
+
+  await requestRepository.create({
+    id: uuidGenerator.generate(),
+    userId: req?.userId ?? undefined,
+    method: req.method,
+    input: JSON.stringify(obfuscateValue({ ...input.body })),
+    route: req.url,
+    status: statusCode,
+    output: JSON.stringify(output),
+    createdAt: new Date()
+  })
 }
