@@ -9,7 +9,11 @@ export const expressAdapter = (controller: ControllerInterface) => {
   return async (req: Request, res: Response) => {
     const input: HttpRequest = {
       body: req.body,
-      params: req.params
+      params: req.params,
+      authenticatedUser: {
+        id: req.userId ?? '',
+        permissions: req.permissions ?? []
+      }
     }
 
     const { statusCode, body } = await controller.execute(input)

@@ -21,6 +21,10 @@ describe('UpdateUserController', () => {
         password: 'anyPassword',
         active: 0,
         permissions: [1, 3]
+      },
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
       }
     }
   })
@@ -35,7 +39,11 @@ describe('UpdateUserController', () => {
       email: 'email@email.com',
       password: 'anyPassword',
       active: 0,
-      permissions: [1, 3]
+      permissions: [1, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
@@ -51,7 +59,11 @@ describe('UpdateUserController', () => {
       email: 'email@email.com',
       password: 'anyPassword',
       active: 0,
-      permissions: [1, 3]
+      permissions: [1, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
@@ -67,7 +79,11 @@ describe('UpdateUserController', () => {
       email: 'email@email.com',
       password: 'anyPassword',
       active: 0,
-      permissions: [1, 3]
+      permissions: [1, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
@@ -83,7 +99,11 @@ describe('UpdateUserController', () => {
       email: null,
       password: 'anyPassword',
       active: 0,
-      permissions: [1, 3]
+      permissions: [1, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
@@ -99,7 +119,11 @@ describe('UpdateUserController', () => {
       email: 'email@email.com',
       password: null,
       active: 0,
-      permissions: [1, 3]
+      permissions: [1, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
@@ -115,7 +139,11 @@ describe('UpdateUserController', () => {
       email: 'email@email.com',
       password: 'anyPassword',
       active: null,
-      permissions: [1, 3]
+      permissions: [1, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
@@ -131,7 +159,11 @@ describe('UpdateUserController', () => {
       email: 'email@email.com',
       password: 'anyPassword',
       active: 0,
-      permissions: null
+      permissions: null,
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
     })
   })
 
