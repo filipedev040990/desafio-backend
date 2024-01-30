@@ -3,7 +3,7 @@ import { JwtAdapter } from '@/adapters/tools/token/jwt.adapter'
 import { UserOutput } from '@/application/interfaces/repositories'
 import { UserRepository } from '@/infra/database/repositories'
 import { TokenRepository } from '@/infra/database/repositories/token.repository'
-import { ForbiddenError, UnauthorizedError } from '@/shared/errors'
+import { ForbiddenError, JwtMissingError, UnauthorizedError } from '@/shared/errors'
 import { isValidString } from '@/shared/helpers'
 import { handleError } from '@/shared/helpers/handle-error.helper'
 import { NextFunction, Request, Response } from 'express'
@@ -31,7 +31,7 @@ export const authenticationMiddleware = async (req: Request, res: Response, next
 
 const getToken = async (headers: any): Promise<string> => {
   if (!isValidString(headers?.authorization)) {
-    throw new ForbiddenError()
+    throw new JwtMissingError()
   }
 
   const tokenRepository = new TokenRepository()
@@ -39,7 +39,7 @@ const getToken = async (headers: any): Promise<string> => {
   const tokenExists = await tokenRepository.getByToken(token)
 
   if (!tokenExists) {
-    throw new UnauthorizedError()
+    throw new ForbiddenError('Invalid JWT token')
   }
   return token
 }

@@ -22,8 +22,8 @@ export class ServerError extends Error {
 }
 
 export class ForbiddenError extends Error {
-  constructor () {
-    super('Forbidden')
+  constructor (message?: string) {
+    super(message ?? 'Forbidden')
     this.name = 'ForbiddenError'
   }
 }
