@@ -2,7 +2,7 @@ import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { CreateUserUseCase } from './create-user.usecase'
 import { mock } from 'jest-mock-extended'
 import MockDate from 'mockdate'
-import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { PermissionRepositoryInterface, UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { HasherInterface, UUIDGeneratorInterface } from '@/application/interfaces/tools'
 
 describe('CreateUserUseCase', () => {
@@ -11,9 +11,10 @@ describe('CreateUserUseCase', () => {
   const userRepository = mock<UserRepositoryInterface>()
   const uuidGenerator = mock<UUIDGeneratorInterface>()
   const hashGenerator = mock<HasherInterface>()
+  const permissionRepository = mock<PermissionRepositoryInterface>()
 
   beforeAll(() => {
-    sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator)
+    sut = new CreateUserUseCase(userRepository, uuidGenerator, hashGenerator, permissionRepository)
     MockDate.set(new Date())
   })
   beforeEach(() => {
@@ -29,6 +30,7 @@ describe('CreateUserUseCase', () => {
     userRepository.create.mockResolvedValue('anyUUID')
     uuidGenerator.generate.mockReturnValue('anyUUID')
     hashGenerator.hash.mockResolvedValue('anyHash')
+    permissionRepository.getAllPermissionsCode.mockResolvedValue([1, 2, 3, 4])
   })
   afterAll(() => {
     MockDate.reset()
@@ -108,5 +110,13 @@ describe('CreateUserUseCase', () => {
     const output = await sut.execute(input)
 
     expect(output).toEqual({ id: 'anyUUID' })
+  })
+
+  test('should throws if a invalid permission is provided', async () => {
+    input.permissions = [1, 2, 5]
+
+    const output = sut.execute(input)
+
+    await expect(output).rejects.toThrowError(new InvalidParamError('permission 5'))
   })
 })

@@ -2,14 +2,15 @@ import { UUIDGeneratorInterface, HasherInterface } from '@/application/interface
 import { CreateUserUseCaseInterface } from './create-user.types'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { isValidEmail, isValidString } from '@/shared/helpers'
-import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { PermissionRepositoryInterface, UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { DEFAULT_USER_INITIAL_STATUS } from '@/shared/constants'
 
 export class CreateUserUseCase implements CreateUserUseCaseInterface {
   constructor (
     private readonly userRepository: UserRepositoryInterface,
     private readonly uuidGenerator: UUIDGeneratorInterface,
-    private readonly hashGenerator: HasherInterface
+    private readonly hashGenerator: HasherInterface,
+    private readonly permissionRepository: PermissionRepositoryInterface
   ) {
   }
 
@@ -40,9 +41,7 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
       }
     }
 
-    if (!input.permissions || input.permissions.length < 1) {
-      throw new MissingParamError('permissions')
-    }
+    await this.validatePermission(input.permissions)
 
     if (input.password !== input.passwordConfirmation) {
       throw new InvalidParamError('passwordConfirmation')
@@ -55,6 +54,19 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
     const emailExists = await this.userRepository.getByEmail(input.email)
     if (emailExists) {
       throw new InvalidParamError('This email is already in use')
+    }
+  }
+
+  async validatePermission (permissions: number[]): Promise<void> {
+    if (!permissions || permissions.length < 1) {
+      throw new MissingParamError('permissions')
+    }
+
+    const permissionsCodes: number [] = await this.permissionRepository.getAllPermissionsCode()
+    const invalidPermissions: number [] = permissions.filter((permission) => !permissionsCodes.includes(permission))
+
+    if (invalidPermissions.length > 0) {
+      throw new InvalidParamError(`permission ${invalidPermissions[0]}`)
     }
   }
 }
