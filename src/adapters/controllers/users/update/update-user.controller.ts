@@ -14,7 +14,8 @@ export class UpdateUserController implements ControllerInterface {
         email: input.body.email ?? null,
         password: input.body.password ?? null,
         active: input.body.active ?? null,
-        permissions: input.body.permissions ?? null
+        permissions: input.body.permissions ?? null,
+        authenticatedUser: input.authenticatedUser
       })
       return success(204, null)
     } catch (error: any) {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { PermissionRepository } from '@/infra/database/repositories/permission.repository'
-import { SPECIAL_ADMIN_PERMISSION } from '@/shared/constants'
+import { UPDATE_ANOTHER_USER_PERMISSION } from '@/shared/constants'
 import { ForbiddenError, InvalidParamError } from '@/shared/errors'
 import { handleError } from '@/shared/helpers/handle-error.helper'
 import { NextFunction, Request, Response } from 'express'
@@ -16,7 +16,7 @@ export const routePermissionMiddleware = async (req: Request, res: Response, nex
     }
 
     const userPermissions = req.permissions
-    if (!userPermissions?.includes(permissionCode) && !userPermissions?.includes(SPECIAL_ADMIN_PERMISSION)) {
+    if (!userPermissions?.includes(permissionCode) && !userPermissions?.includes(UPDATE_ANOTHER_USER_PERMISSION)) {
       throw new ForbiddenError()
     }
 

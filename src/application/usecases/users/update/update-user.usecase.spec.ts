@@ -28,7 +28,11 @@ describe('UpdateUserUseCase', () => {
       name: 'AnyName',
       password: '123',
       active: 1,
-      permissions: [1, 2, 3]
+      permissions: [1, 2, 3],
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [9999]
+      }
     }
   })
 
@@ -136,5 +140,36 @@ describe('UpdateUserUseCase', () => {
     const output = sut.execute(input)
 
     await expect(output).rejects.toThrowError(new MissingParamError('Payload is empty'))
+  })
+
+  test('should throw if another user updates without permission', async () => {
+    input.authenticatedUser = {
+      id: 'anotherId',
+      permissions: [1]
+    }
+
+    const output = sut.execute(input)
+
+    await expect(output).rejects.toThrowError(new InvalidParamError('You do not have permission to update this user'))
+  })
+
+  test('should update another user with special permission', async () => {
+    input.authenticatedUser = {
+      id: 'anotherId',
+      permissions: [9999]
+    }
+
+    await sut.execute(input)
+
+    expect(userRepository.update).toHaveBeenCalledTimes(1)
+    expect(userRepository.update).toHaveBeenCalledWith({
+      id: 'anyId',
+      updatedAt: new Date(),
+      email: 'email@email.com',
+      password: 'anyHash',
+      active: 1,
+      name: 'AnyName',
+      permissions: '1,2,3'
+    })
   })
 })

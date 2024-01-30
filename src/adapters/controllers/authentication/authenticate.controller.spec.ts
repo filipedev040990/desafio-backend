@@ -16,6 +16,10 @@ describe('AuthenticateController', () => {
       body: {
         email: 'anyEmail@email.com',
         password: 'anyPassword'
+      },
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 2, 3]
       }
     }
 

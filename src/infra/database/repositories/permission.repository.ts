@@ -15,4 +15,15 @@ export class PermissionRepository implements PermissionRepositoryInterface {
 
     return permission.permissionCode
   }
+
+  async getAllPermissionsCode (): Promise<number[]> {
+    const permissionsCode: number [] = []
+    const permissions = await prismaClient.permission.findMany()
+
+    for (const permission of permissions) {
+      permissionsCode.push(permission.permissionCode)
+    }
+
+    return permissionsCode
+  }
 }

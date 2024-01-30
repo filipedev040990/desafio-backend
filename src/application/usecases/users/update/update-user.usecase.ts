@@ -3,6 +3,7 @@ import { UpdateUserUseCaseInterface } from './update-user.types'
 import { UpdateUserRepositoryInput, UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { isValidEmail, isValidString } from '@/shared/helpers'
 import { HasherInterface } from '@/application/interfaces/tools'
+import { UPDATE_ANOTHER_USER_PERMISSION } from '@/shared/constants'
 
 export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
   private repositoryInput: UpdateUserRepositoryInput = { id: '', updatedAt: new Date() }
@@ -71,6 +72,16 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
       }
 
       this.repositoryInput.permissions = input.permissions.join(',')
+    }
+
+    if (input.authenticatedUser.id !== input.id) {
+      this.canUpdateAnotherUser(input)
+    }
+  }
+
+  canUpdateAnotherUser (input: UpdateUserUseCaseInterface.Input): void {
+    if (!input.authenticatedUser.permissions.includes(UPDATE_ANOTHER_USER_PERMISSION)) {
+      throw new InvalidParamError('You do not have permission to update this user')
     }
   }
 }

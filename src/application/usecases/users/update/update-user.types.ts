@@ -10,5 +10,9 @@ export namespace UpdateUserUseCaseInterface {
     password?: string
     active?: number
     permissions?: number []
+    authenticatedUser: {
+      id: string
+      permissions: number []
+    }
   }
 }

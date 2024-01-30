@@ -18,6 +18,10 @@ describe('CreateUserController', () => {
         password: 'anyPassword',
         passwordConfirmation: 'anyPassword',
         permissions: [1, 2, 3, 4]
+      },
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 2, 3]
       }
     }
     createUserUseCase.execute.mockResolvedValue({
