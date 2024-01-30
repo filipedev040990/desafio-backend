@@ -11,13 +11,15 @@ import { NextFunction, Request, Response } from 'express'
 export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = await getToken(req?.headers)
-    const data = decryptToken(token)
+    const data = await decryptToken(token)
 
     if (data) {
       const user = await getUser(data.userId)
       if (user) {
-        req.userId = user.id
-        req.permissions = user.permissions
+        req.authenticatedUser = {
+          id: user.id,
+          permissions: user.permissions
+        }
         return next()
       }
     }
@@ -44,9 +46,9 @@ const getToken = async (headers: any): Promise<string> => {
   return token
 }
 
-const decryptToken = (token: string): any => {
-  const jwtToken = new JwtAdapter(process.env.SECRET_KEY ?? '')
-  const data = jwtToken.decrypt(token)
+const decryptToken = async (token: string): Promise<any> => {
+  const jwtToken = new JwtAdapter(process.env.SECRETKEY ?? '')
+  const data = await jwtToken.decrypt(token)
   return data ?? null
 }
 

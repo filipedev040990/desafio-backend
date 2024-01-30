@@ -15,7 +15,7 @@ export const routePermissionMiddleware = async (req: Request, res: Response, nex
       throw new InvalidParamError('Route not found')
     }
 
-    const userPermissions = req.permissions
+    const userPermissions = req.authenticatedUser.permissions
     if (!userPermissions?.includes(permissionCode) && !userPermissions?.includes(UPDATE_ANOTHER_USER_PERMISSION)) {
       throw new ForbiddenError()
     }

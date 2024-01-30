@@ -66,7 +66,7 @@ export class CreateUserUseCase implements CreateUserUseCaseInterface {
     const invalidPermissions: number [] = permissions.filter((permission) => !permissionsCodes.includes(permission))
 
     if (invalidPermissions.length > 0) {
-      throw new InvalidParamError(`permission ${invalidPermissions[0]}`)
+      throw new InvalidParamError(`permission ${invalidPermissions.join(',')}`)
     }
   }
 }

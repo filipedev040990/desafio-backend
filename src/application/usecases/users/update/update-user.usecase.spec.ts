@@ -1,7 +1,7 @@
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { UpdateUserUseCase } from './update-user.usecase'
 import { mock } from 'jest-mock-extended'
-import { UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { PermissionRepositoryInterface, UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { HasherInterface } from '@/application/interfaces/tools'
 import MockDate from 'mockdate'
 
@@ -11,9 +11,10 @@ describe('UpdateUserUseCase', () => {
 
   const userRepository = mock<UserRepositoryInterface>()
   const hashGenerator = mock<HasherInterface>()
+  const permissionRepository = mock<PermissionRepositoryInterface>()
 
   beforeEach(() => {
-    sut = new UpdateUserUseCase(userRepository, hashGenerator)
+    sut = new UpdateUserUseCase(userRepository, hashGenerator, permissionRepository)
 
     userRepository.getById.mockResolvedValue({
       id: 'anyUserId',
@@ -22,6 +23,7 @@ describe('UpdateUserUseCase', () => {
       permissions: [1, 2, 3]
     })
     hashGenerator.hash.mockResolvedValue('anyHash')
+    permissionRepository.getAllPermissionsCode.mockResolvedValue([1, 2, 3, 4])
     input = {
       id: 'anyId',
       email: 'email@email.com',
@@ -110,14 +112,6 @@ describe('UpdateUserUseCase', () => {
     await expect(output).rejects.toThrowError(new InvalidParamError('This status should be a boolean'))
   })
 
-  test('should throw if permissions is provided and is invalid', async () => {
-    input.permissions = ['1', '2']
-
-    const output = sut.execute(input)
-
-    await expect(output).rejects.toThrowError(new InvalidParamError('permissions'))
-  })
-
   test('should call UserRepository.update once and with correct values', async () => {
     await sut.execute(input)
 
@@ -171,5 +165,13 @@ describe('UpdateUserUseCase', () => {
       name: 'AnyName',
       permissions: '1,2,3'
     })
+  })
+
+  test('should throws if a invalid permission is provided', async () => {
+    input.permissions = [1, 2, 5, 6, 7]
+
+    const output = sut.execute(input)
+
+    await expect(output).rejects.toThrowError(new InvalidParamError('permission 5,6,7'))
   })
 })

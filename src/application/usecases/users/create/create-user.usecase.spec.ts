@@ -113,10 +113,10 @@ describe('CreateUserUseCase', () => {
   })
 
   test('should throws if a invalid permission is provided', async () => {
-    input.permissions = [1, 2, 5]
+    input.permissions = [1, 2, 5, 6, 7]
 
     const output = sut.execute(input)
 
-    await expect(output).rejects.toThrowError(new InvalidParamError('permission 5'))
+    await expect(output).rejects.toThrowError(new InvalidParamError('permission 5,6,7'))
   })
 })

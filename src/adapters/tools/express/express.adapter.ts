@@ -10,10 +10,7 @@ export const expressAdapter = (controller: ControllerInterface) => {
     const input: HttpRequest = {
       body: req.body,
       params: req.params,
-      authenticatedUser: {
-        id: req.userId ?? '',
-        permissions: req.permissions ?? []
-      }
+      authenticatedUser: req.authenticatedUser ?? null
     }
 
     const { statusCode, body } = await controller.execute(input)
@@ -28,10 +25,9 @@ export const expressAdapter = (controller: ControllerInterface) => {
 const addRequestLog = async (req: Request, input: HttpRequest, output: any, statusCode: number): Promise<void> => {
   const requestRepository = new RequestsRepository()
   const uuidGenerator = new UUIDGenerator()
-
   await requestRepository.create({
     id: uuidGenerator.generate(),
-    userId: req?.userId ?? undefined,
+    userId: req?.authenticatedUser?.id ?? undefined,
     method: req.method,
     input: JSON.stringify(obfuscateValue({ ...input.body })),
     route: req.url,

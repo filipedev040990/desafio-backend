@@ -1,6 +1,6 @@
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { UpdateUserUseCaseInterface } from './update-user.types'
-import { UpdateUserRepositoryInput, UserRepositoryInterface } from '@/application/interfaces/repositories'
+import { PermissionRepositoryInterface, UpdateUserRepositoryInput, UserRepositoryInterface } from '@/application/interfaces/repositories'
 import { isValidEmail, isValidString } from '@/shared/helpers'
 import { HasherInterface } from '@/application/interfaces/tools'
 import { UPDATE_ANOTHER_USER_PERMISSION } from '@/shared/constants'
@@ -10,7 +10,8 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
 
   constructor (
     private readonly userRepository: UserRepositoryInterface,
-    private readonly hashGenerator: HasherInterface) {}
+    private readonly hashGenerator: HasherInterface,
+    private readonly permissionRepository: PermissionRepositoryInterface) {}
 
   async execute (input: UpdateUserUseCaseInterface.Input): Promise<void> {
     await this.validateInput(input)
@@ -65,18 +66,29 @@ export class UpdateUserUseCase implements UpdateUserUseCaseInterface {
     }
 
     if (input?.permissions && input?.permissions?.length) {
-      for (const permission of input.permissions) {
-        if (typeof permission !== 'number') {
-          throw new InvalidParamError('permissions')
-        }
-      }
-
-      this.repositoryInput.permissions = input.permissions.join(',')
+      await this.validatePermission(input.permissions)
     }
 
     if (input.authenticatedUser.id !== input.id) {
       this.canUpdateAnotherUser(input)
     }
+  }
+
+  async validatePermission (permissions: number[]): Promise<void> {
+    const permissionsCodes: number [] = await this.permissionRepository.getAllPermissionsCode()
+    const invalidPermissions: number [] = permissions.filter((permission) => !permissionsCodes.includes(permission))
+
+    if (invalidPermissions.length > 0) {
+      throw new InvalidParamError(`permission ${invalidPermissions.join(',')}`)
+    }
+
+    for (const permission of permissions) {
+      if (typeof permission !== 'number') {
+        throw new InvalidParamError('permissions')
+      }
+    }
+
+    this.repositoryInput.permissions = permissions.join(',')
   }
 
   canUpdateAnotherUser (input: UpdateUserUseCaseInterface.Input): void {
