@@ -73,6 +73,27 @@ export class UserRepository implements UserRepositoryInterface {
     }
   }
 
+  async getAll (): Promise<UserOutput[] | null> {
+    const users = await prismaClient.user.findMany()
+
+    if (!users) {
+      return null
+    }
+
+    const output: UserOutput[] = []
+
+    for (const user of users) {
+      output.push({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        permissions: this.transformStringPermissionsIntoArray(user.permissions)
+      })
+    }
+
+    return output
+  }
+
   private transformStringPermissionsIntoArray (permissions: string): number [] {
     const permissionsArray: number [] = []
     permissions.split(',').map((permission: string) => permissionsArray.push(+permission))

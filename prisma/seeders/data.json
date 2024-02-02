@@ -6,16 +6,7 @@
                 "name": "Administrator",
                 "email": "admin@gmail.com",
                 "password": "$2a$12$XC3e0AqD8vJYOvSiBpqiJ.zggRGRxG6Rv5L3T1TZGl/JDFv8C8L5m",
-                "permissions": "1,2",
-                "createdAt": "2023-12-06T23:59:59.999Z",
-                "active": 1
-            },
-            {
-                "id": "69cf1cf4-d350-4252-ae3e-635e31cbcd92",
-                "name": "Zé das Couves",
-                "email": "zedascouves@gmail.com",
-                "password": "$2a$12$XC3e0AqD8vJYOvSiBpqiJ.zggRGRxG6Rv5L3T1TZGl/JDFv8C8L5m",
-                "permissions": "1",
+                "permissions": "9999",
                 "createdAt": "2023-12-06T23:59:59.999Z",
                 "active": 1
             }]
@@ -33,6 +24,13 @@
                 "method": "PATCH",
                 "route": "/user/:id",
                 "permissionCode": 2,
+                "createdAt": "2023-12-13T23:59:59.999Z",
+                "updatedAt": null
+            },{
+                "id": "ca8eb91b-1e97-423e-a7dc-7764905af3b0",
+                "method": "GET",
+                "route": "/user",
+                "permissionCode": 3,
                 "createdAt": "2023-12-13T23:59:59.999Z",
                 "updatedAt": null
             }]

@@ -41,6 +41,6 @@ export interface UserRepositoryInterface {
   getAllInfo: (email: string) => Promise<UserAllInfoOutput>
   create: (input: CreateUserRepositoryInput) => Promise<string>
   getById: (id: string) => Promise<UserOutput>
-  getAll: () => Promise<UserOutput[]>
+  getAll: () => Promise<UserOutput[] | null>
   update: (input: UpdateUserRepositoryInput) => Promise<void>
 }

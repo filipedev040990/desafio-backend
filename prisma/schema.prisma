@@ -54,7 +54,7 @@ model Token {
 model Permission {
   id             String    @id
   method         String
-  route          String    @unique
+  route          String
   permissionCode Int       @unique
   createdAt      DateTime
   updatedAt      DateTime?

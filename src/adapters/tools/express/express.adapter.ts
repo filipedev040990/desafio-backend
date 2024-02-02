@@ -10,6 +10,7 @@ export const expressAdapter = (controller: ControllerInterface) => {
     const input: HttpRequest = {
       body: req.body,
       params: req.params,
+      query: req.query,
       authenticatedUser: req.authenticatedUser ?? null
     }
 
