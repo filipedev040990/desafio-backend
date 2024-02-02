@@ -14,6 +14,5 @@ export const handleError = (error: any): HttpResponse => {
   if (error instanceof ForbiddenError || error instanceof JwtMissingError) {
     return forbiddenError(error)
   }
-
   return serverError(error)
 }

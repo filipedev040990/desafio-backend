@@ -8,7 +8,7 @@ const user = {
   id: 'anyId',
   name: 'AnyName',
   email: 'anyEmail',
-  permissions: [1, 2]
+  permissions: [1, 3]
 }
 
 describe('GetUserController', () => {
@@ -20,6 +20,10 @@ describe('GetUserController', () => {
     input = {
       query: {
         id: 'anyId'
+      },
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
       }
     }
     getUserUseCase.execute.mockResolvedValue(user)
@@ -29,7 +33,13 @@ describe('GetUserController', () => {
     await sut.execute(input)
 
     expect(getUserUseCase.execute).toHaveBeenCalledTimes(1)
-    expect(getUserUseCase.execute).toHaveBeenCalledWith('anyId')
+    expect(getUserUseCase.execute).toHaveBeenCalledWith({
+      id: 'anyId',
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
+    })
   })
 
   test('should call GetUserUseCase.execute once and without id', async () => {
@@ -38,7 +48,13 @@ describe('GetUserController', () => {
     await sut.execute(input)
 
     expect(getUserUseCase.execute).toHaveBeenCalledTimes(1)
-    expect(getUserUseCase.execute).toHaveBeenCalledWith(null)
+    expect(getUserUseCase.execute).toHaveBeenCalledWith({
+      id: null,
+      authenticatedUser: {
+        id: 'anyId',
+        permissions: [1, 3]
+      }
+    })
   })
 
   test('should return a correct output', async () => {

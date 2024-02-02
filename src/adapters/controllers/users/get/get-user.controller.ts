@@ -8,7 +8,10 @@ export class GetUserController implements ControllerInterface {
   constructor (private readonly getUserUseCase: GetUserUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
     try {
-      const output = await this.getUserUseCase.execute(input?.query?.id ?? null)
+      const output = await this.getUserUseCase.execute({
+        id: input?.query?.id ?? null,
+        authenticatedUser: input.authenticatedUser ?? null
+      })
       return success(200, output)
     } catch (error: any) {
       return handleError(error)
