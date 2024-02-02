@@ -1,4 +1,5 @@
 import { ForbiddenError, InvalidParamError, JwtMissingError, MissingParamError, UnauthorizedError } from '../errors'
+import logger from '../logger'
 import { HttpResponse } from '../types'
 import { badRequest, forbiddenError, serverError, unauthorized } from './http.helper'
 
@@ -14,5 +15,7 @@ export const handleError = (error: any): HttpResponse => {
   if (error instanceof ForbiddenError || error instanceof JwtMissingError) {
     return forbiddenError(error)
   }
+
+  logger.error(error)
   return serverError(error)
 }
