@@ -12,7 +12,6 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc -p tsconfig-build.json",
     "build:up": "clear && npm run build && docker compose down && docker compose up",
-    "prepare": "husky install",
     "check": "npm-check -s -u",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
