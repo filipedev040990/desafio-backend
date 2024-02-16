@@ -16,7 +16,7 @@ jobs:
         node-version: 18.x
 
     - name: Instalar Dependências
-      run: npm install
+      run: npm install --package-lock-only
 
     - name: Executar Testes Unitários
       run: npm test
@@ -26,3 +26,10 @@ jobs:
 
     - name: Build da Aplicação
       run: npm run build
+  
+  check-vulnerabilities:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Executar npm audit
+        run: npm audit
