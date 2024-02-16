@@ -15,6 +15,9 @@ jobs:
       with:
         node-version: 18.x
 
+    - name: Limpar cache do npm
+      run: npm cache clean --force
+
     - name: Instalar Dependências
       run: npm install
     
