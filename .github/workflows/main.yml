@@ -1,0 +1,25 @@
+name: Node.js CI
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do Código
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+
+    - name: Instalar Dependências
+      run: npm install
+
+    - name: Executar Testes
+      run: npm test
+
+    - name: Build da Aplicação
+      run: npm run build
