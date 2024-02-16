@@ -18,8 +18,11 @@ jobs:
     - name: Instalar Dependências
       run: npm install
 
-    - name: Executar Testes
+    - name: Executar Testes Unitários
       run: npm test
+
+    - name: Executar Cobertura de Testes
+      run: npm run test:coverage  
 
     - name: Build da Aplicação
       run: npm run build
