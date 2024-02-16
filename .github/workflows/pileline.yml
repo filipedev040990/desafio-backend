@@ -3,7 +3,7 @@ name: Node.js CI
 on: [push]
 
 jobs:
-  build-and-test:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,26 +15,35 @@ jobs:
       with:
         node-version: 18.x
 
-    - name: Limpar cache do npm
-      run: npm cache clean --force
-
-    - name: Instalar Dependências
-      run: npm install
-    
-    - name: Gerar arquivo package-lock.json
-      run: npm i --package-lock-only
-
     - name: Executar Testes Unitários
       run: npm test
 
     - name: Executar Cobertura de Testes
-      run: npm run test:coverage  
+      run: npm run test:coverage
 
-    - name: Build da Aplicação
-      run: npm run build
+  install-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Limpar cache do npm
+        run: npm cache clean --force
+
+      - name: Instalar Dependências
+        run: npm install
+      
+      - name: Gerar arquivo package-lock.json
+        run: npm i --package-lock-only
+    
+  build-application:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build da Aplicação
+        run: npm run build
   
   check-vulnerabilities:
-    needs: build-and-test
+    needs: unit-tests
     runs-on: ubuntu-latest
 
     steps:
