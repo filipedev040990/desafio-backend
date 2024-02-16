@@ -16,7 +16,10 @@ jobs:
         node-version: 18.x
 
     - name: Instalar Dependências
-      run: npm install --package-lock-only
+      run: npm install
+    
+    - name: Gerar arquivo package-lock.json
+      run: npm i --package-lock-only
 
     - name: Executar Testes Unitários
       run: npm test
